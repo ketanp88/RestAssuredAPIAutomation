@@ -10,7 +10,7 @@ import java.util.*;
 
 public class PostRequest extends TestBase {
 
-	String bearerToken = "123b934dd48340c191d0ee731fac0f54e122ac016798c5dba1bec7f5200ed2b1";
+	
 		
 	@Test
 	public void CreateUsersJSONRequest()

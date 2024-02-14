@@ -12,6 +12,7 @@ import core.Base;
 
 public class TestBase extends Assertions {
 
+	public String bearerToken = "";
 	@BeforeMethod(alwaysRun = true)
 	public void initialize(@Optional String browser)
 	{
