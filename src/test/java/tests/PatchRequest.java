@@ -5,6 +5,8 @@ import org.testng.annotations.Test;
 import core.Utils;
 import static io.restassured.RestAssured.*;
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
+
 import static org.hamcrest.Matchers.*;
 import java.util.*;
 
@@ -16,39 +18,36 @@ public class PatchRequest extends TestBase {
 	public void UpdateUsersRequest()
 	{
 		//Create Request
-		String name = Utils.generateRandomString(5);
-		String email = name+ "@" + Utils.generateRandomString(5) + ".com";
-		JSONObject requestBody = new JSONObject();
-		requestBody.put("name", name);
-		requestBody.put("email", email);
-		requestBody.put("gender", "male");
-		requestBody.put("status", "active");
-		
-		given().
-			headers("Authorization", "Bearer " + bearerToken).
-			body(requestBody.toJSONString()).
-		when().
-			post("https://gorest.co.in/public/v2/users").
-		then().
-			statusCode(201).
-			body("name[0]", equalTo(name)).
-			log().all();
-		
-		
-		
-		// Update Request
-		JSONObject patchBody = new JSONObject();
-		requestBody.put("name", "TestName");
-		
-		given().
-			headers("Authorization", "Bearer " + bearerToken).
-			body(patchBody.toJSONString()).
-		when().
-			put("https://gorest.co.in/public/v2/users").
-		then().
-			statusCode(201).
-			body("name[0]", equalTo("TestName")).
-		log().all();
+				String name = Utils.generateRandomString(5) + " " +Utils.generateRandomString(4);
+				String email = name.replace(" ", "")+ "@" + Utils.generateRandomString(5) + ".com";
+				JSONObject requestBody = new JSONObject();
+				requestBody.put("name", name);
+				requestBody.put("email", email);
+				requestBody.put("gender", "male");
+				requestBody.put("status", "active");
+				System.out.println("Request Body: " + requestBody);
+				
+				Response response = given()
+		                .header("Authorization", "Bearer " + bearerToken) 
+		                .body(requestBody.toJSONString()) 
+		                .header("Content-Type", "application/json") 
+		                .post("https://gorest.co.in/public/v2/users");
+		         
+		        String id = response.jsonPath().getString("id");
+				
+				// Update Request
+		        JSONObject updatedRequestBody = new JSONObject();
+		        updatedRequestBody.put("name", "Test");
+		        
+		        Response patchResponse = given()
+		        		.header("Authorization", "Bearer " + bearerToken) 
+		        		.body(updatedRequestBody.toJSONString()) 
+		        		.header("Content-Type", "application/json") 
+		        		.put("https://gorest.co.in/public/v2/users/"+id);
+		        		
+				verifyEquals(patchResponse.getStatusCode(), 200);
+				verifyEquals(patchResponse.jsonPath().getString("name"), "Test");
+				
 	}
 	
 	

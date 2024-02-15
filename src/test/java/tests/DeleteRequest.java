@@ -1,17 +1,16 @@
 package tests;
 
+import static io.restassured.RestAssured.given;
+
 import org.json.simple.JSONObject;
 import org.testng.annotations.Test;
+
 import core.Utils;
-import static io.restassured.RestAssured.*;
-import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
-import static org.hamcrest.Matchers.*;
-import java.util.*;
+public class DeleteRequest extends TestBase{
 
-public class PostRequest extends TestBase {
-
+	
 	@Test
 	public void CreateUsersJSONRequest()
 	{
@@ -29,11 +28,17 @@ public class PostRequest extends TestBase {
                 .body(requestBody.toJSONString()) 
                 .header("Content-Type", "application/json") 
                 .post("https://gorest.co.in/public/v2/users");
-		verifyEquals(postResponse.getStatusCode(), 201);
-		verifyEquals(postResponse.jsonPath().getString("name"), name);
-		verifyEquals(postResponse.jsonPath().getString("email"), email);
-		verifyEquals(postResponse.jsonPath().getString("gender"), "male");
-		verifyEquals(postResponse.jsonPath().getString("status"), "active");
+		
+		
+		String id = postResponse.jsonPath().getString("id");
+		
+		Response deleteResponse = given()
+                .header("Authorization", "Bearer " + bearerToken) 
+                .header("Content-Type", "application/json") 
+                .post("https://gorest.co.in/public/v2/users/"+id);
+		verifyEquals(deleteResponse.getStatusCode(), 404);
+		
+		
         
     }
 	

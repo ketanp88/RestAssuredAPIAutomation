@@ -12,7 +12,7 @@ import core.Base;
 
 public class TestBase extends Assertions {
 
-	public String bearerToken = "";
+	public String bearerToken = "123b934dd48340c191d0ee731fac0f54e122ac016798c5dba1bec7f5200ed2b1";
 	@BeforeMethod(alwaysRun = true)
 	public void initialize(@Optional String browser)
 	{
